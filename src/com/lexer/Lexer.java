@@ -47,11 +47,13 @@ public class Lexer {
             		else if(forward == '>') {state=6;
             								 forward=(char) fr.read();
             								 }
+            		else state=POZZO;
             		break;
             case 1: if(forward == '=') state=2;
             		else if(forward == '>') state=3;
-            		else {state=4;
-            			  keep=true;}
+            		else if(forward != '=' || forward != '>'){state=4;
+            			  				     				  keep=true;}
+            		else state=POZZO;
             		break;
             case 2: toReturn.setClasse("RELOP");
             		toReturn.setLessema("LE");
@@ -67,8 +69,9 @@ public class Lexer {
     				return toReturn;
             case 6: if(forward == '=') {state=7;
             							}
-            		else {state=8;
-            			  keep=true;}
+            		else if(forward != '='){state=8;
+            			  					keep=true;}
+            		else state=POZZO;
             		break;
             case 7: toReturn.setClasse("RELOP");
     				toReturn.setLessema("GE");
@@ -76,9 +79,10 @@ public class Lexer {
             case 8: toReturn.setClasse("RELOP");
     				toReturn.setLessema("GT");
     				return toReturn;
-            case POZZO: toReturn.setClasse("INVALID");
-			 			toReturn.setLessema("TOKEN");
-			 			return toReturn;
+            case POZZO: forward=(char) fr.read();
+            			keep=true;
+            			state=0;
+            			break;
             }
         	
         }//fine while
