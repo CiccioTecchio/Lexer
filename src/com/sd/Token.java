@@ -1,4 +1,4 @@
-package com.token;
+package com.sd;
 
 public class Token {
     private String classe;
