@@ -11,15 +11,21 @@ import com.sd.KeyWordTbl;
 import com.sd.Token;
 
 
+/**
+ * 
+ * @author francescovicidomini
+ * This class is a lexical analyzer
+ * 
+ */
+
 public class Lexer {
 	public static Logger logger=Logger.getLogger("global");
-	private final int POZZO = 100;
-    private TreeMap<Integer, String> symbTbl;
-    private KeyWordTbl keyWord;
-    private  char forward;
-    private static boolean keep=false;
-    private static Integer key=0;
-    private int state;
+	private final int POZZO = 100; //state where the input must be rejected
+    private TreeMap<Integer, String> symbTbl; //contains all the variables recognized in lang.txt
+    private KeyWordTbl keyWord; //contains all keywords present in keywords.txt
+    private  char forward; //character to examine to determine the token
+    private static boolean keep=false; // if keep == true stop read
+    private int state; //state of transaction diagram
     
     public Lexer() throws IOException {
     	this.symbTbl = new TreeMap<>();
@@ -27,6 +33,12 @@ public class Lexer {
     	this.state=0;
     }
 
+    /**
+     * scan lang.txt char by char and return a Token
+     * @param fr for read the file char by char
+     * @return a recognized Token
+     * @throws IOException
+     */
     public Token getToken(InputStream fr) throws IOException {
         Token toReturn = new Token();
         String str = "";
@@ -99,11 +111,18 @@ public class Lexer {
             										 }
             		 else {
             			   if(!symbTbl.containsValue(str)) {
-            				   							  symbTbl.put(key, str);
-            				   							  toReturn.setClasse(key.toString());
+            				   							  if(symbTbl.isEmpty()) {
+					            				   								  symbTbl.put(0, str);
+					            				   								  toReturn.setClasse(""+0);
+					            				   								  toReturn.setLessema(str);
+					            				   								  return toReturn;
+            				   							  }else {
+            				   							  int k=symbTbl.lastKey()+1;
+            				   							  symbTbl.put(k, str);
+            				   							  toReturn.setClasse(""+k);
             				 							  toReturn.setLessema(str);
-            				 							  key++;
             				 							  return toReturn;
+            				   							  }
             			 								 }
             			 else {
             				 Set<Entry<Integer,String>>list=symbTbl.entrySet();
@@ -151,10 +170,11 @@ public class Lexer {
             
         }//fine while
     }
+    
     /**
-     * @description prende un carattere e vede dove reindirizzarlo
-     * @param forward carattere da esaminare
-     * @return se c'è bisogno di leggere un nuovo carattere restituisce false, true altrimenti
+     * given a character and sees where to redirect it
+     * @param forward character to examine
+     * @return if you need to read a new character it returns false, true otherwise
      * @throws IOException 
      */
     private boolean route(char forward) {

@@ -10,8 +10,11 @@ public class KeyWordTbl extends TreeMap<String,String> {
 	public KeyWordTbl() throws IOException {
 		init();
 	}
-
-	public void init() throws IOException {
+/**
+ * read in keywords.txt and insert the readed value
+ * @throws IOException
+ */
+	private void init() throws IOException {
 		File file = new File("src/com/sd/keywords.txt");
 		Scanner in = new Scanner(file);
 		String keyword="";
