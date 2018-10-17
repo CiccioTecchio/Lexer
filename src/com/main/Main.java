@@ -1,11 +1,13 @@
-package com.lexer;
+package com.main;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Scanner;
 
+import com.lexer.Lexer;
 import com.sd.Token;
 
 public class Main {
@@ -17,17 +19,21 @@ public class Main {
         Token token = new Token();
         try {
         Lexer lexer = new Lexer();
-        InputStream fr = new BufferedInputStream(new FileInputStream("src/com/lexer/lang.txt"));
-        System.out.println("Insert a digit between 1 and 9 to get next token, 0 to stop token flow");
-        //lexer.begin=(char) fr.read();
-        while(scanner.nextInt() != 0) {
+        //Scanner scanner =new Scanner(new File("src/com/main/lang.txt"));
+        Thread t = new Thread();
+        InputStream fr = new BufferedInputStream(new FileInputStream("src/com/main/lang.txt"));
+        int i=0;
+        while(lexer.getEof()!=-1) {
         token=lexer.getToken(fr);
-        System.out.println(token);
+        System.out.println(i+":\t"+token);
+        i++;
         }	
         fr.close();
         }catch (IOException e){
             e.printStackTrace();
         }
 
-    }
+
+        }
+        
 }

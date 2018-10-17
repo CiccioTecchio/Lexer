@@ -26,11 +26,13 @@ public class Lexer {
     private  char forward; //character to examine to determine the token
     private static boolean keep=false; // if keep == true stop read
     private int state; //state of transaction diagram
+    private int eof;
     
     public Lexer() throws IOException {
     	this.symbTbl = new TreeMap<>();
     	this.keyWord = new KeyWordTbl();
     	this.state=0;
+    	this.eof=0;
     }
 
     /**
@@ -40,14 +42,15 @@ public class Lexer {
      * @throws IOException
      */
     public Token getToken(InputStream fr) throws IOException {
-        Token toReturn = new Token();
+        Token toReturn = new Token("","");
         String str = "";
         String num = "";
+        
         state = 0;
         if(!keep) forward=(char) fr.read();
         keep=false;
         if(!route(forward))forward=(char)fr.read();
-        while (true) {
+        loop: while (true) {
             switch (state) {
             case 0: 
             		if(forward == '<') {state=1;
@@ -164,11 +167,15 @@ public class Lexer {
             		 toReturn.setLessema(num);
             		 return toReturn;
             case POZZO: 
-            		   if(!route(forward))forward=(char)fr.read();
+            	       
+            		   if(!route(forward)) {eof=fr.read();
+            			                    forward=(char)eof;
+            			                    if(eof==-1)
+            			                    break loop;}
             		   break;
             }
-            
         }//fine while
+        return toReturn;//return a void token, the void token sign the end of file
     }
     
     /**
@@ -189,6 +196,12 @@ public class Lexer {
 			 
     	return toReturn;
     	}
+
+	public int getEof() {
+		return eof;
+	}
+    
+    
 
     
     
