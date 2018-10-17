@@ -1,35 +1,29 @@
 package com.lexer;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map.Entry;
-import java.util.Scanner;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.logging.Logger;
 
 import com.sd.KeyWordTbl;
 import com.sd.Token;
 
 
 public class Lexer {
-    
+	public static Logger logger=Logger.getLogger("global");
 	private final int POZZO = 100;
     private TreeMap<Integer, String> symbTbl;
     private KeyWordTbl keyWord;
     private  char forward;
-    private static boolean keep;
-    private static Integer key;
+    private static boolean keep=false;;
+    private static Integer key=0;
     private int state;
     
     public Lexer() throws IOException {
     	this.symbTbl = new TreeMap<>();
     	this.keyWord = new KeyWordTbl();
-    	this.forward = '\0';
-    	this.keep=false;
-    	this.key=0;
     	this.state=0;
     }
 
@@ -107,7 +101,6 @@ public class Lexer {
             										 }
             		 else {
             			   if(!symbTbl.containsValue(str)) {
-            				   							  System.out.println("VUOTA O NON CONTIENE");
             				   							  symbTbl.put(key, str);
             				   							  toReturn.setClasse(key.toString());
             				 							  toReturn.setLessema(str);
@@ -115,7 +108,6 @@ public class Lexer {
             				 							  return toReturn;
             			 								 }
             			 else {
-            				 System.out.println("CONTIENE");
             				 Set<Entry<Integer,String>>list=symbTbl.entrySet();
             				 for(Entry entry:list) {
             					 String value= (String) entry.getValue();
@@ -133,26 +125,32 @@ public class Lexer {
             	     break;
             case 13: if(Character.isDigit(forward)) {num+=forward;
             									     forward=(char) fr.read();}
-            		 else if(!Character.isDigit(forward)) { state=20;
-            		 										keep=true;}
+            		 else if(forward == '.') {num+=forward;
+            		 						  state=14;
+            		 						  forward=(char) fr.read();}
+            		 else if(forward == 'E') {num+=forward;
+            			                      state=16;
+            			                      forward=(char) fr.read();}
+            		 else if(forward != '.' || forward != 'E' || !Character.isDigit(forward)){state=20;keep=true; }
+            		 else state=POZZO;
+            		 break;
+            case 14: if(Character.isDigit(forward)) {num+=forward;
+            										 forward=(char) fr.read();}
+            		 else if(!Character.isDigit(forward)){state=21;
+            		 									  keep=true;}
             		 else state=POZZO;
             		 break;
             case 20: toReturn.setClasse("NCONST");
             		 toReturn.setLessema(num);
             		 return toReturn;
+            case 21: toReturn.setClasse("RCONST");
+            		 toReturn.setLessema(num);
+            		 return toReturn;
             case POZZO: 
             		   if(!route(forward))forward=(char)fr.read();
             		   break;
-            			/*if(forward == '='||forward == '>'|| forward == '<') state=0;
-            			else if(Character.isLetter(forward)) state=9;
-            			//else if(Character.isDigit(forward)) state=12;
-            			else {forward=(char) fr.read();
-            			}*/
-            			
-
             }
             
-        	
         }//fine while
     }
     /**
@@ -169,8 +167,8 @@ public class Lexer {
 											  toReturn=true;}
 		else if(Character.isDigit(forward)) {state=12;
     										   toReturn=true;}
-		else {toReturn=false;
-			 }
+		else toReturn=false;
+			 
     	return toReturn;
     	}
 
