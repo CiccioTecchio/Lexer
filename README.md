@@ -1,7 +1,7 @@
 # Lexer
 
 This is a Java implementation of a Lexer present in the book **Principles of Compiler Design** written by **Alfred Aho and Jeffrey D. Ullman**.  
-What I will go to implement are the transaction diagram to recognize the relationship operations, identificators and integer and real numbers.
+What I will go to implement are the transaction diagram to recognize the relationship operations, identificators and  numbers.
 
 ### Relop diagram
 ---

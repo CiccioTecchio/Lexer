@@ -148,15 +148,48 @@ public class Lexer {
             		 else if(forward == '.') {num+=forward;
             		 						  state=14;
             		 						  forward=(char) fr.read();}
-            		 else if(forward != '.' || !Character.isDigit(forward)){state=20;keep=true; }
+            		 else if(forward == 'E') {num+=forward;
+            			 					  state=16;
+            			 					  forward=(char) fr.read();}
+            		 else if(forward != '.' ||  forward != 'E' || !Character.isDigit(forward)){state=20;keep=true; }
             		 else state=POZZO;
             		 break;
             case 14: if(Character.isDigit(forward)) {num+=forward;
-            										 forward=(char) fr.read();}
-            		 else if(!Character.isDigit(forward)){state=21;
-            		 									  keep=true;}
+            										 forward=(char) fr.read();
+            										 state=15;}
             		 else state=POZZO;
             		 break;
+            case 15: if(Character.isDigit(forward)) {num+=forward;
+            										 forward=(char) fr.read();}
+            		 else if(forward=='E') {num+=forward;
+            		 						forward=(char)fr.read();
+            		 						state=16;}
+            		 else if(forward!='E'||!Character.isDigit(forward)) {state=21;
+            		 									   				 keep=true;}
+            		 else state=POZZO;
+            		 break;
+            case 16: if(forward=='+'||forward=='-') {state=17;
+            										num+=forward;
+            										forward=(char) fr.read();}
+            		 else if(forward!='+'||forward!='-') {state=18;
+            		 									  num+=forward;
+            		 									  forward=(char) fr.read();}
+            		 else state=POZZO;
+                     break;
+            case 17: if(Character.isDigit(forward)) {state=18;
+            										 num+=forward;
+													 forward=(char) fr.read();}
+            		 else state=POZZO;
+            		 break;
+            case 18: if(Character.isDigit(forward)) {num+=forward;
+													forward=(char) fr.read();}
+            		 else if(!Character.isDigit(forward)){state=19;
+            			 								  keep=true;}
+            		 else state=POZZO;
+            		 break;
+            case 19: toReturn.setClasse("ECONST");
+            		 toReturn.setLessema(num);
+            		 return toReturn;	
             case 20: toReturn.setClasse("NCONST");
             		 toReturn.setLessema(num);
             		 return toReturn;
