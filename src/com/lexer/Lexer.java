@@ -17,7 +17,7 @@ public class Lexer {
     private TreeMap<Integer, String> symbTbl;
     private KeyWordTbl keyWord;
     private  char forward;
-    private static boolean keep=false;;
+    private static boolean keep=false;
     private static Integer key=0;
     private int state;
     
@@ -80,12 +80,10 @@ public class Lexer {
             case 8: toReturn.setClasse("RELOP");
     				toReturn.setLessema("GT");
     				return toReturn;
-            case 9: //if(Character.isLetter(forward)) {
-            										 state=10;
-            										 str+=forward;
-            										 forward=(char) fr.read();
-            						//				 }
-            	//	else state=POZZO;
+            case 9:
+            		state=10;
+            		str+=forward;
+            		forward=(char) fr.read();
             		break;
             case 10: if(Character.isLetterOrDigit(forward)) {str+=forward;
             												forward=(char) fr.read();

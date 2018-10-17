@@ -9,12 +9,7 @@ public class KeyWordTbl extends TreeMap<String,String> {
 	
 	public KeyWordTbl() throws IOException {
 		init();
-		/*put("IF", "if");
-		put("THEN", "then");
-		put("ELSE", "else");
-		put("INT", "int");*/
 	}
-	
 
 	public void init() throws IOException {
 		File file = new File("src/com/sd/keywords.txt");

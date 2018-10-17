@@ -23,8 +23,7 @@ public class Main {
         while(scanner.nextInt() != 0) {
         token=lexer.getToken(fr);
         System.out.println(token);
-        }
-    	
+        }	
         fr.close();
         }catch (IOException e){
             e.printStackTrace();
