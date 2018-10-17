@@ -22,6 +22,7 @@ public class KeyWordTbl extends TreeMap<String,String> {
 			keyword=in.next();
 			put(keyword.toUpperCase(),keyword.toLowerCase());
 		}
+		in.close();
 	}
 	
 }

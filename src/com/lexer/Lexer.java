@@ -26,7 +26,7 @@ public class Lexer {
     private  char forward; //character to examine to determine the token
     private static boolean keep=false; // if keep == true stop read
     private int state; //state of transaction diagram
-    private int eof;
+    private int eof; //check the end of file
     
     public Lexer() throws IOException {
     	this.symbTbl = new TreeMap<>();
@@ -106,7 +106,7 @@ public class Lexer {
             		 else if(!Character.isLetterOrDigit(forward)){state=11;
             		 											  keep=true;}
             		 else state=POZZO;
-            		break;
+            		 break;
             case 11: 
             		if(keyWord.containsValue(str)) { toReturn.setClasse(str.toUpperCase());
             										 toReturn.setLessema(str);
@@ -148,10 +148,7 @@ public class Lexer {
             		 else if(forward == '.') {num+=forward;
             		 						  state=14;
             		 						  forward=(char) fr.read();}
-            		 else if(forward == 'E') {num+=forward;
-            			                      state=16;
-            			                      forward=(char) fr.read();}
-            		 else if(forward != '.' || forward != 'E' || !Character.isDigit(forward)){state=20;keep=true; }
+            		 else if(forward != '.' || !Character.isDigit(forward)){state=20;keep=true; }
             		 else state=POZZO;
             		 break;
             case 14: if(Character.isDigit(forward)) {num+=forward;
@@ -166,12 +163,10 @@ public class Lexer {
             case 21: toReturn.setClasse("RCONST");
             		 toReturn.setLessema(num);
             		 return toReturn;
-            case POZZO: 
-            	       
-            		   if(!route(forward)) {eof=fr.read();
+            case POZZO: if(!route(forward)) {eof=fr.read();
+            		   					    if(eof==-1)break loop;
             			                    forward=(char)eof;
-            			                    if(eof==-1)
-            			                    break loop;}
+            			                    }
             		   break;
             }
         }//fine while
