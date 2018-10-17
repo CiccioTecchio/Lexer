@@ -5,3 +5,5 @@ int
 double
 float
 long
+true
+false

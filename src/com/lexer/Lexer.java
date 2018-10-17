@@ -22,6 +22,7 @@ public class Lexer {
     private  char forward;
     private static boolean keep;
     private static Integer key;
+    private int state;
     
     public Lexer() throws IOException {
     	this.symbTbl = new TreeMap<>();
@@ -29,14 +30,17 @@ public class Lexer {
     	this.forward = '\0';
     	this.keep=false;
     	this.key=0;
+    	this.state=0;
     }
 
     public Token getToken(InputStream fr) throws IOException {
         Token toReturn = new Token();
         String str = "";
-        int state = 0;
+        String num = "";
+        state = 0;
         if(!keep) forward=(char) fr.read();
         keep=false;
+        if(!route(forward))forward=(char)fr.read();
         while (true) {
             switch (state) {
             case 0: 
@@ -82,11 +86,12 @@ public class Lexer {
             case 8: toReturn.setClasse("RELOP");
     				toReturn.setLessema("GT");
     				return toReturn;
-            case 9: if(Character.isLetter(forward)) {state=10;
+            case 9: //if(Character.isLetter(forward)) {
+            										 state=10;
             										 str+=forward;
             										 forward=(char) fr.read();
-            										 }
-            		else state=POZZO;
+            						//				 }
+            	//	else state=POZZO;
             		break;
             case 10: if(Character.isLetterOrDigit(forward)) {str+=forward;
             												forward=(char) fr.read();
@@ -122,20 +127,52 @@ public class Lexer {
             			 }
             		 }
             		break;
+            case 12: state=13;
+			 		 num+=forward;
+			 		 forward=(char) fr.read();
+            	     break;
+            case 13: if(Character.isDigit(forward)) {num+=forward;
+            									     forward=(char) fr.read();}
+            		 else if(!Character.isDigit(forward)) { state=20;
+            		 										keep=true;}
+            		 else state=POZZO;
+            		 break;
+            case 20: toReturn.setClasse("NCONST");
+            		 toReturn.setLessema(num);
+            		 return toReturn;
             case POZZO: 
-            			if(forward == '='||forward == '>'|| forward == '<') state=0;
+            		   if(!route(forward))forward=(char)fr.read();
+            		   break;
+            			/*if(forward == '='||forward == '>'|| forward == '<') state=0;
             			else if(Character.isLetter(forward)) state=9;
-            			//else if(Character.isDigit(forward)) state=<todo>;
+            			//else if(Character.isDigit(forward)) state=12;
             			else {forward=(char) fr.read();
+            			}*/
             			
-            			}
-            			break;
+
             }
             
         	
         }//fine while
     }
-    
+    /**
+     * @description prende un carattere e vede dove reindirizzarlo
+     * @param forward carattere da esaminare
+     * @return se c'è bisogno di leggere un nuovo carattere restituisce false, true altrimenti
+     * @throws IOException 
+     */
+    private boolean route(char forward) {
+    	boolean toReturn=false;
+    	if(forward == '='||forward == '>'|| forward == '<') {state=0;
+    														 toReturn=true;}
+		else if(Character.isLetter(forward)) {state=9;
+											  toReturn=true;}
+		else if(Character.isDigit(forward)) {state=12;
+    										   toReturn=true;}
+		else {toReturn=false;
+			 }
+    	return toReturn;
+    	}
 
     
     
