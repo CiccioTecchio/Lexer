@@ -23,7 +23,7 @@ public class Lexer {
     private static boolean keep;
     private static Integer key;
     
-    public Lexer() {
+    public Lexer() throws IOException {
     	this.symbTbl = new TreeMap<>();
     	this.keyWord = new KeyWordTbl();
     	this.forward = '\0';

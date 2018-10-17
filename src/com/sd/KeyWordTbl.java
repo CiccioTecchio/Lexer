@@ -1,15 +1,29 @@
 package com.sd;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Scanner;
 import java.util.TreeMap;
 
 public class KeyWordTbl extends TreeMap<String,String> {
 	
-	public KeyWordTbl() {
-		put("IF", "if");
+	public KeyWordTbl() throws IOException {
+		init();
+		/*put("IF", "if");
 		put("THEN", "then");
 		put("ELSE", "else");
-		put("INT", "int");
+		put("INT", "int");*/
 	}
 	
 
+	public void init() throws IOException {
+		File file = new File("src/com/sd/keywords.txt");
+		Scanner in = new Scanner(file);
+		String keyword="";
+		while(in.hasNext()) {
+			keyword=in.next();
+			put(keyword.toUpperCase(),keyword.toLowerCase());
+		}
+	}
+	
 }
