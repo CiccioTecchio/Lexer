@@ -7,5 +7,6 @@ float
 long
 true
 false
+while
+for
 null
-Casa pulita

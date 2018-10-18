@@ -17,11 +17,15 @@ public class Main {
         Lexer lexer = new Lexer();
         InputStream fr = new BufferedInputStream(new FileInputStream("src/com/main/lang.txt"));
         int i=0;
-        while(lexer.getEof()!=-1) {
         token=lexer.getToken(fr);
-        System.out.println(i+":\t"+token);
-        i++;
-        }	
+        String classe=token.getClasse();
+        while(!classe.equals("EOF")) {
+            //
+            System.out.println(i+":\t"+token);
+            token=lexer.getToken(fr);
+            classe=token.getClasse();
+            i++;
+            }
         fr.close();
         }catch (IOException e){
             e.printStackTrace();
