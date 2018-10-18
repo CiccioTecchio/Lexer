@@ -17,12 +17,12 @@ public class Main {
         Lexer lexer = new Lexer();
         InputStream fr = new BufferedInputStream(new FileInputStream("src/com/main/lang.txt"));
         int i=0;
-        token=lexer.getToken(fr);
+        token=lexer.nextToken(fr);
         String classe=token.getClasse();
         while(!classe.equals("EOF")) {
             //
             System.out.println(i+":\t"+token);
-            token=lexer.getToken(fr);
+            token=lexer.nextToken(fr);
             classe=token.getClasse();
             i++;
             }

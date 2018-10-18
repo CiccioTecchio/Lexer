@@ -39,10 +39,11 @@ public class Lexer {
      * @return a recognized Token
      * @throws IOException
      */
-    public Token getToken(InputStream fr) throws IOException {
+    public Token nextToken(InputStream fr) throws IOException {
         Token toReturn = new Token("EOF","eof");
         String str = "";
         String num = "";
+        int blank = 0;
         state=0;
         if(!keep) forward=(char) fr.read();
         keep=false;
@@ -53,17 +54,19 @@ public class Lexer {
             		if(forward == '<') {state=1;
             							forward=(char) fr.read();
             							}
-            		else if(forward == '=') {state=5;}
-            		else if(forward == '>') {state=6;
+            		else if(forward == '=') {state=7;}
+            		else if(forward == '>') {state=8;
             								 forward=(char) fr.read();
             								 }
             		else state=POZZO;
             		break;
             case 1: if(forward == '=') state=2;
             		else if(forward == '>') state=3;
-            		else if(forward != '=' || forward != '>'){state=4;
-            			  				     				  keep=true;
-            			  				     				  }
+            		else if(forward == '-') {state=4;
+            								 forward=(char)fr.read();}
+            		else if(forward != '=' || forward != '>' || forward != '-'){state=6;
+            			  				     				  					keep=true;
+            			  				     				  					}
             		else state=POZZO;
             		break;
             case 2: toReturn.setClasse("RELOP");
@@ -72,39 +75,43 @@ public class Lexer {
             case 3: toReturn.setClasse("RELOP");
     				toReturn.setLessema("NE");
     				return toReturn;
-            case 4: toReturn.setClasse("RELOP");
-    				toReturn.setLessema("LT");
-    				return toReturn;
-            case 5: toReturn.setClasse("RELOP");
-    				toReturn.setLessema("EQ");
-    				return toReturn;
-            case 6: if(forward == '=') {state=7;
-        
-            							}
-            		else if(forward != '='){state=8;
-            		keep=true;
-            			  					}
+            case 4: if(forward=='-') {state=5;
+									  keep=true;}
             		else state=POZZO;
             		break;
+            case 5: toReturn.setClasse("RELOP");
+   		 			 toReturn.setLessema("ASSIGN");
+   		 			 return toReturn;
+            case 6: toReturn.setClasse("RELOP");
+    				toReturn.setLessema("LT");
+    				return toReturn;
             case 7: toReturn.setClasse("RELOP");
+    				toReturn.setLessema("EQ");
+    				return toReturn;
+            case 8: if(forward == '=') state=9;
+            		else if(forward != '='){state=10;
+            								keep=true;}
+            		else state=POZZO;
+            		break;
+            case 9: toReturn.setClasse("RELOP");
     				toReturn.setLessema("GE");
     				return toReturn;
-            case 8: toReturn.setClasse("RELOP");
+            case 10: toReturn.setClasse("RELOP");
     				toReturn.setLessema("GT");
     				return toReturn;
-            case 9:
-            		state=10;
+            case 11:
+            		state=12;
             		str+=forward;
             		forward=(char) fr.read();
             		break;
-            case 10: if(Character.isLetterOrDigit(forward)) {str+=forward;
+            case 12: if(Character.isLetterOrDigit(forward)) {str+=forward;
             												forward=(char) fr.read();
             												 }
-            		 else if(!Character.isLetterOrDigit(forward)){state=11;
+            		 else if(!Character.isLetterOrDigit(forward)){state=13;
             		 											  keep=true;}
             		 else state=POZZO;
             		 break;
-            case 11: 
+            case 13: 
             		if(keyWord.containsValue(str)) { toReturn.setClasse(str.toUpperCase());
             										 toReturn.setLessema(str);
             										 return toReturn;
@@ -136,63 +143,80 @@ public class Lexer {
             			 }
             		 }
             		break;
-            case 12: state=13;
+            case 14: state=15;
 			 		 num+=forward;
 			 		 forward=(char) fr.read();
             	     break;
-            case 13: if(Character.isDigit(forward)) {num+=forward;
+            case 15: if(Character.isDigit(forward)) {num+=forward;
             									     forward=(char) fr.read();}
             		 else if(forward == '.') {num+=forward;
-            		 						  state=14;
+            		 						  state=16;
             		 						  forward=(char) fr.read();}
             		 else if(forward == 'E') {num+=forward;
-            			 					  state=16;
+            			 					  state=18;
             			 					  forward=(char) fr.read();}
-            		 else if(forward != '.' ||  forward != 'E' || !Character.isDigit(forward)){state=20;keep=true; }
+            		 else if(forward != '.' ||  forward != 'E' || !Character.isDigit(forward)){state=22;keep=true; }
             		 else state=POZZO;
             		 break;
-            case 14: if(Character.isDigit(forward)) {num+=forward;
+            case 16: if(Character.isDigit(forward)) {num+=forward;
             										 forward=(char) fr.read();
-            										 state=15;}
+            										 state=17;}
             		 else state=POZZO;
             		 break;
-            case 15: if(Character.isDigit(forward)) {num+=forward;
+            case 17: if(Character.isDigit(forward)) {num+=forward;
             										 forward=(char) fr.read();}
             		 else if(forward=='E') {num+=forward;
             		 						forward=(char)fr.read();
-            		 						state=16;}
-            		 else if(forward!='E'||!Character.isDigit(forward)) {state=21;
+            		 						state=18;}
+            		 else if(forward!='E'||!Character.isDigit(forward)) {state=23;
             		 									   				 keep=true;}
             		 else state=POZZO;
             		 break;
-            case 16: if(forward=='+'||forward=='-') {state=17;
+            case 18: if(forward=='+'||forward=='-') {state=19;
             										num+=forward;
             										forward=(char) fr.read();}
-            		 else if(forward!='+'||forward!='-') {state=18;
+            		 else if(forward!='+'||forward!='-') {state=20;
             		 									  num+=forward;
             		 									  forward=(char) fr.read();}
             		 else state=POZZO;
                      break;
-            case 17: if(Character.isDigit(forward)) {state=18;
+            case 19: if(Character.isDigit(forward)) {state=20;
             										 num+=forward;
 													 forward=(char) fr.read();}
             		 else state=POZZO;
             		 break;
-            case 18: if(Character.isDigit(forward)) {num+=forward;
+            case 20: if(Character.isDigit(forward)) {num+=forward;
 													forward=(char) fr.read();}
-            		 else if(!Character.isDigit(forward)){state=19;
+            		 else if(!Character.isDigit(forward)){state=21;
             			 								  keep=true;}
             		 else state=POZZO;
             		 break;
-            case 19: toReturn.setClasse("ECONST");
+            case 21: toReturn.setClasse("ECONST");
             		 toReturn.setLessema(num);
             		 return toReturn;	
-            case 20: toReturn.setClasse("NCONST");
+            case 22: toReturn.setClasse("NCONST");
             		 toReturn.setLessema(num);
             		 return toReturn;
-            case 21: toReturn.setClasse("RCONST");
+            case 23: toReturn.setClasse("RCONST");
             		 toReturn.setLessema(num);
             		 return toReturn;
+            case 24: toReturn.setClasse("SEPARATOR");
+            		 toReturn.setLessema(""+forward);
+            		 return toReturn;
+            case 25: if(forward == ' '||forward == '\n'|| forward == '\t') {//unlock this comment to return Token with blank spaces
+            																//blank=(int)forward;
+            																forward=(char)fr.read();
+            																//state=26;
+            																//keep=true;
+            																}
+            		 else if (forward != ' '||forward != '\n'|| forward != '\t') {if(!route(forward)) {forward=(char)fr.read();
+																								          keep=true;																					  
+																								          }
+																					} else state=POZZO;
+            		 break;
+            /*case 26: toReturn.setClasse("BLANK");
+   		 			 toReturn.setLessema(""+blank);
+   		 			 return toReturn;*/
             case POZZO: if(!route(forward)) {int eof=fr.read();
             		   					    if(eof==-1)break loop;
             			                    forward=(char)eof;
@@ -213,10 +237,17 @@ public class Lexer {
     	boolean toReturn=false;
     	if(forward == '='||forward == '>'|| forward == '<') {state=0;
     														 toReturn=true;}
-		else if(Character.isLetter(forward)) {state=9;
+		else if(Character.isLetter(forward)) {state=11;
 											  toReturn=true;}
-		else if(Character.isDigit(forward)) {state=12;
-    										   toReturn=true;}
+		else if(Character.isDigit(forward)) {state=14;
+    										 toReturn=true;}
+		else if(forward == '('||forward == ')'|| 
+				forward == '['||forward == ']'||
+				forward == '{'||forward == '}'||
+				forward == ','||forward == ';' ) {state=24;
+												  toReturn=true;}
+		else if(forward == ' '||forward == '\n'|| forward == '\t') {state=25;
+																	toReturn=true;}
 		else toReturn=false;
 			 
     	return toReturn;
