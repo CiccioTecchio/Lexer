@@ -25,7 +25,7 @@ What I will go to implement are the transaction diagram to recognize the relatio
  ---
  The separator are the symbol:
  -  {} [\] ()
- - , ; 
+ - , ; .
   <div style="text-aling:center">
  <img src="https://github.com/CiccioTecchio/Lexer/blob/master/img/separator.png"/>
  </div>  

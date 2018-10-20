@@ -244,7 +244,7 @@ public class Lexer {
 		else if(forward == '('||forward == ')'|| 
 				forward == '['||forward == ']'||
 				forward == '{'||forward == '}'||
-				forward == ','||forward == ';' ) {state=24;
+				forward == ','||forward == ';' ||forward == '.' ) {state=24;
 												  toReturn=true;}
 		else if(forward == ' '||forward == '\n'|| forward == '\t') {state=25;
 																	toReturn=true;}
