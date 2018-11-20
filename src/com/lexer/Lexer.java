@@ -201,7 +201,27 @@ public class Lexer {
             		 toReturn.setLessema(num);
             		 return toReturn;
             case 24: toReturn.setClasse("SEPARATOR");
-            		 toReturn.setLessema(""+forward);
+            		 //toReturn.setLessema(""+forward);
+            		 switch(forward) {
+            		 case '(': toReturn.setLessema("L-ROUND");
+            			 	   break;
+            		 case ')': toReturn.setLessema("R-ROUND");
+  			 	   			   break;
+            		 case '[': toReturn.setLessema("L-SQUARE");
+  			 	   			   break;
+            		 case ']': toReturn.setLessema("R-SQUARE");
+            		 		   break;
+            		 case '{': toReturn.setLessema("L-BRIEF");
+  			 	   			   break;
+            		 case '}': toReturn.setLessema("R-BRIEF");
+	 	   			   		   break;
+            		 case ',': toReturn.setLessema("COMMA");
+  			 	   			   break;
+            		 case ';': toReturn.setLessema("SEMICOL");
+	 	   			           break;
+            		 case '.': toReturn.setLessema("DOT");
+  			           		   break;
+            		 }
             		 return toReturn;
             case 25: if(forward == ' '||forward == '\n'|| forward == '\t') {//unlock this comment to return Token with blank spaces
             																//blank=(int)forward;
