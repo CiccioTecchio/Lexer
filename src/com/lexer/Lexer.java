@@ -136,7 +136,7 @@ public class Lexer {
             				 for(Entry entry:list) {
             					 String value= (String) entry.getValue();
             					 if(value.compareTo(str)==0) {Integer k=(Integer) entry.getKey();
-            						 						  toReturn.setClasse(""+k);
+            						 						  toReturn.setClasse("ID: "+k);
             						 						  toReturn.setLessema(str);
             						 						  return toReturn;}
             				 }
