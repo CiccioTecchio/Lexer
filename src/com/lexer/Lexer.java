@@ -120,13 +120,13 @@ public class Lexer {
             			   if(!symbTbl.containsValue(str)) {
             				   							  if(symbTbl.isEmpty()) {
 					            				   								  symbTbl.put(0, str);
-					            				   								  toReturn.setClasse(""+0);
+					            				   								  toReturn.setClasse("ID: "+0);
 					            				   								  toReturn.setLessema(str);
 					            				   								  return toReturn;
             				   							  }else {
             				   							  int k=symbTbl.lastKey()+1;
             				   							  symbTbl.put(k, str);
-            				   							  toReturn.setClasse(""+k);
+            				   							  toReturn.setClasse("ID: "+k);
             				 							  toReturn.setLessema(str);
             				 							  return toReturn;
             				   							  }
@@ -224,9 +224,10 @@ public class Lexer {
             		 }
             		 return toReturn;
             case 25: if(forward == ' '||forward == '\n'|| forward == '\t') {//unlock this comment to return Token with blank spaces
-            																//blank=(int)forward;
+            																blank=(int)forward;
             																forward=(char)fr.read();
             																//state=26;
+            																state = POZZO;
             																//keep=true;
             																}
             		 else if (forward != ' '||forward != '\n'|| forward != '\t') {if(!route(forward)) {forward=(char)fr.read();

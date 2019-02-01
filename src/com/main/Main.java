@@ -20,7 +20,6 @@ public class Main {
         token=lexer.nextToken(fr);
         String classe=token.getClasse();
         while(!classe.equals("EOF")) {
-            //
             System.out.println(i+":\t"+token);
             token=lexer.nextToken(fr);
             classe=token.getClasse();
